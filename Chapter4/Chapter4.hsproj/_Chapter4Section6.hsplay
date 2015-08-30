@@ -1,0 +1,17 @@
+-- Haskell Playground 1.0
+let awesome = ["Papuchon", "curry", "Haskell"]
+
+awesome
+
+let alsoAwesome = ["Quake", "The Simons"]
+
+(++)
+
+awesome ++ alsoAwesome
+
+let allAwesome = [awesome, alsoAwesome]
+
+(concat)
+
+concat allAwesome
+

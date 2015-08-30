@@ -1,0 +1,13 @@
+-- Haskell Playground 1.0
+fst
+snd
+
+let myTup = (1 :: Int, "blah")
+fst myTup
+snd myTup
+
+import Data.Tuple
+swap myTup
+
+2 + fst (1,2)
+2 + snd (1,2)

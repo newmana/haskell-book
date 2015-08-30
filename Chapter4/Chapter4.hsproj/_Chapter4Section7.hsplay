@@ -1,0 +1,13 @@
+-- Haskell Playground 1.0
+-- length allAwesome == 2
+-- length allAwesome + length awesome
+(8 == 8) && ('b' < 'a')
+
+isPalindrome "a"
+isPalindrome "madam"
+isPalindrome "ass"
+
+myAbs (-1)
+myAbs 1
+
+f (1,2) (3, 4)

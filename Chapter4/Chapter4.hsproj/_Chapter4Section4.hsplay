@@ -1,0 +1,41 @@
+-- Haskell Playground 1.0
+let x = 5
+x == 5
+x == 6
+x < 7
+x > 3
+x /= 5
+
+'a' == 'a'
+'a' == 'b'
+'a' < 'b'
+'a' > 'b'
+'a' == 'A'
+"Julie" == "Chris"
+"Julie" > "Chris"
+"Chris" < "Julie"
+
+['a', 'b'] > ['b', 'a']
+1 > 2
+[1, 2] > [2, 1]
+
+[Blah, Woot] > [Woot, Blah]
+"Julie" == 8
+
+not (x == 5)
+not (x > 7)
+True && True
+False || True
+not True
+not (True && True)
+
+if True then "Truthin'" else "Falsin'"
+if False then "Truthin'" else "Falsin'"
+
+let x = 0
+if (x + 1 == 1) then "AWESOME" else "wut"
+
+let x = 0
+if (x * 100) then "adopt a dog" else "or a cat"
+if (x * 100) == 0 then "adopt a dog" else "or a cat"
+if (x * 100) == 9001 then "adopt a dog" else "or a cat"
