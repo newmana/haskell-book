@@ -1,6 +1,7 @@
 module Addition where 
 
 import Test.Hspec
+import Test.QuickCheck
 
 -- sayHello :: IO ()
 -- sayHello = putStrLn "hello!"
@@ -13,7 +14,10 @@ dividedBy num denom = go num denom 0
 
 main :: IO () 
 main = hspec $ do
-  describe "Addition" $ do 
+  describe "Addition" $ do
+      it "x + 1 is always greater than x" $ do
+        property $ \x -> x + 1 > (x :: Int)
+       
       it "1 + 1 is greater than 1" $ do
         (1 + 1) > 1 `shouldBe` True
         
