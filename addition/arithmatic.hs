@@ -22,6 +22,18 @@ main = hspec $ do
         property $ \x -> (halfIdentity x) == (x :: Double)
       it "list" $ do
         property $ \x -> listOrdered (sort x::[Int]) == True
+      it "plus associative" $ do
+        property $ \(x,y,z) -> x + (y + z) == (((x + y) + z)::Int) 
+      it "plus commute" $ do
+        property $ \(x,y) -> x + y == ((y + x)::Int) 
+      it "mult associative" $ do
+        property $ \(x,y,z) -> x * (y * z) == (((x * y) * z)::Int) 
+      it "mult commute" $ do
+        property $ \(x,y) -> x * y == ((y * x)::Int) 
+      it "quot commute" $ do
+        property $ \(x,y) -> (quot x y) * y + (rem x y) == (x::Int) 
+      it "div commute" $ do
+        property $ \(x,y) -> (div x y) * y + (mod x y) == (x::Int) 
        
     --   it "1 + 1 is greater than 1" $ do
     --     (1 + 1) > 1 `shouldBe` True
