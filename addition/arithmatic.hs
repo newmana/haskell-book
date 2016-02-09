@@ -20,18 +20,18 @@ listOrdered xs = snd $ foldr go (Nothing, True) xs
 
 main :: IO () 
 main = hspec $ do
-  describe "Arithmatic" $ do
-      it "half" $ do
+  describe "arithmetic" $ do
+      it "should be equal when we halve the number and multiply it by two" $ do
         property $ \(x::Double) -> (halfIdentity x) == x
-      it "list" $ do
+      it "should order a list" $ do
         property $ \(x::[Int]) -> listOrdered (sort x) == True
-      it "plus associative" $ do
+      it "is associative for addition" $ do
         property $ \((x,y,z)::(Int,Int,Int)) -> x + (y + z) == (x + y) + z 
-      it "plus commute" $ do
+      it "is commutative for addition" $ do
         property $ \((x,y)::(Int,Int)) -> x + y == y + x
-      it "mult associative" $ do
+      it "is associative for multiplication" $ do
         property $ \((x,y,z)::(Int,Int,Int)) -> x * (y * z) == (x * y) * z 
-      it "mult commute" $ do
+      it "is commutative for multiplication" $ do
         property $ \((x,y)::(Int,Int)) -> x * y == y * x 
       it "quot commute" $ do
         property $ \((NonZero x, NonZero y)::(NonZero Int, NonZero Int)) -> (quot x y) * y + (rem x y) == x 
@@ -43,4 +43,16 @@ main = hspec $ do
         property $ \((x,y)::(Int,Int)) -> x ^ y == y ^ x
       it "same twice list" $ do
         property $ \(x::[Int]) -> (reverse . reverse) x == id x
-                        
+      it "application" $ do
+        property $ \((f, x)::(Fun Int Int, Int)) -> (apply f x) == (apply f $ x)
+      it "application composition" $ do
+        property $ \((f, g, x)::(Fun Int Int, Fun Int Int, Int)) -> ((apply f) . (apply g)) x == (apply f) ((apply g) x)
+      it "foldr append" $ do
+        property $ \(x::[Int],y::[Int]) -> foldr (:) y x == x ++ y
+      it "foldr concat" $ do
+        property $ \(x::[[Int]]) -> foldr (++) [] x == concat x
+      it "length" $ do
+        property $ \(x::[Int],y::Int) -> length (take y x) == y
+      it "show" $ do
+        property $ \(x::Int) -> (read (show x)) == x
+      
