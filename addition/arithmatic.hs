@@ -3,8 +3,11 @@
 module Arithmatic where 
 
 import Test.Hspec
+import Control.Applicative
 import Test.QuickCheck
+import Data.Char
 import Test.QuickCheck.Function
+import Test.QuickCheck.Modifiers
 import Data.List (sort)
 
 half :: Double -> Double
@@ -18,9 +21,17 @@ listOrdered xs = snd $ foldr go (Nothing, True) xs
   where go y (Nothing, t) = (Just y, t) 
         go y (Just x, _) = (Just y, x >= y)
 
+square x = x * x
+
+twice f = f . f 
+fourTimes = twice . twice
+
+capitalizeWord :: String -> String
+capitalizeWord = liftA2 (:) (toUpper . head) tail
+
 main :: IO () 
 main = hspec $ do
-  describe "arithmetic" $ do
+  describe "arithmatic" $ do
       it "should be equal when we halve the number and multiply it by two" $ do
         property $ \(x::Double) -> (halfIdentity x) == x
       it "should order a list" $ do
@@ -55,4 +66,13 @@ main = hspec $ do
         property $ \(x::[Int],y::Int) -> length (take y x) == y
       it "show" $ do
         property $ \(x::Int) -> (read (show x)) == x
-      
+      it "square" $ do
+        property $ \(x::Double) -> (square . sqrt) x == x  
+      it "idem capitalize 1" $ do
+        property $ \((NonEmpty x)::(NonEmptyList Char)) -> capitalizeWord x == twice capitalizeWord x
+      it "idem capitalize 2" $ do
+        property $ \((NonEmpty x)::(NonEmptyList Char)) -> twice capitalizeWord x == fourTimes capitalizeWord x
+      it "idem sort 1" $ do
+        property $ \((NonEmpty x)::(NonEmptyList Char)) -> sort x == twice sort x
+      it "idem sort 2" $ do
+        property $ \((NonEmpty x)::(NonEmptyList Char)) -> twice sort x == fourTimes sort x        
