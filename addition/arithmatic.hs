@@ -29,6 +29,14 @@ fourTimes = twice . twice
 capitalizeWord :: String -> String
 capitalizeWord = liftA2 (:) (toUpper . head) tail
 
+data Fool = Fulse | Frue deriving (Eq, Show)
+
+foolGen :: Gen Fool 
+foolGen = elements [Fulse, Frue]
+
+foolGen' :: Gen Fool 
+foolGen' = frequency [ (2, return Fulse), (1, return Frue)]
+
 main :: IO () 
 main = hspec $ do
   describe "arithmatic" $ do
