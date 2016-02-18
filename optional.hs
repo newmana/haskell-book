@@ -2,11 +2,9 @@ import Data.Monoid
 
 data Optional a = Nada | Only a deriving (Eq, Show)
 
-instance (Monoid a, Num a) => Monoid (Optional a) where
+instance (Monoid a) => Monoid (Optional a) where
   mempty = Nada
-  mappend (Nada) (Only a) = Only a
-  mappend (Only a) (Nada) = Only a
-  mappend (Only a) (Only b) = Only (a + b)
+  mappend (Only a) (Only b) = Only (a `mappend` b)
 
 test1 = Only (Sum 1) `mappend` Only (Sum 1) == Only (Sum 2)
 test2 = Only (Sum 1) `mappend` Nada == Only (Sum 1)
