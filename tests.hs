@@ -1,5 +1,25 @@
-data Optional a = Nada | Only a deriving (Eq, Show)
+module Main where
 
-instance Monoid a => Monoid (Optional a) where
-  mempty = undefined
-  mappend = undefined
+import qualified Data.Map as M 
+import Morse
+import Test.QuickCheck
+
+allowedChars :: [Char] 
+allowedChars = M.keys letterToMorse
+
+allowedMorse :: [String] 
+allowedMorse = M.elems letterToMorse
+
+charGen :: Gen Char
+charGen = elements allowedChars
+
+morseGen :: Gen Morse
+morseGen = elements allowedMorse
+
+prop_thereAndBackAgain :: Property
+prop_thereAndBackAgain =
+  forAll charGen
+  (\c -> ((charToMorse c) >>= morseToChar) == Just c)
+
+main :: IO ()
+main = quickCheck prop_thereAndBackAgain
