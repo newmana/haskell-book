@@ -1,6 +1,7 @@
 import           Control.Monad
 import           Data.Monoid
 import           Test.QuickCheck
+import           Test.QuickCheck.Poly
 
 monoidAssoc :: (Eq m, Monoid m) => m -> m -> m -> Bool
 monoidAssoc a b c = (a <> (b <> c)) == ((a <> b) <> c)
@@ -35,9 +36,6 @@ firstMappend = mappend
 
 main :: IO ()
 main = do
-  -- quickCheck (monoidAssoc :: (Eq a, Show a) => First' a -> First' a -> First' a -> Bool)
-  -- quickCheck (monoidLeftIdentity :: (Eq a, Show a) => First' a -> Bool)
-  -- quickCheck (monoidRightIdentity :: (Eq a, Show a) => First' a -> Bool)
-  -- monoidLeftIdentity mempty firstMappend
-  -- monoidRightIdentity mempty firstMappend
-  return ()
+  quickCheck (monoidAssoc :: First' A -> First' A -> First' A -> Bool)
+  quickCheck (monoidLeftIdentity :: First' A -> Bool)
+  quickCheck (monoidRightIdentity :: First' A -> Bool)

@@ -81,12 +81,11 @@ instance (Semigroup a, Semigroup b) => Semigroup (Combine a b) where
 
 main :: IO ()
 main = do
-  -- monoidAssoc trivialSmush
-  -- quickCheck (monoidAssoc :: (Eq a, Show a) => Trivial -> Trivial -> Trivial -> Bool)
-  -- quickCheck (monoidAssoc :: (Eq a, Show a, Semigroup a) => Identity a -> Identity a -> Identity a -> Bool)
-  -- quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b, Semigroup a, Semigroup b) => Two a b -> Two a b -> Two a b -> Bool)
-  -- quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b, Eq c, Show c, Semigroup a, Semigroup b, Semigroup c) => Three a b c -> Three a b c -> Three a b c -> Bool)
-  -- quickCheck (monoidAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
-  -- quickCheck (monoidAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
-  -- quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b) => Or a b -> Or a b -> Or a b -> Bool)
+  quickCheck (monoidAssoc :: Trivial -> Trivial -> Trivial -> Bool)
+--  quickCheck (monoidAssoc :: Identity Bool -> Identity Bool -> Identity Bool -> Bool)
+--   quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b, Semigroup a, Semigroup b) => Two a b -> Two a b -> Two a b -> Bool)
+--   quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b, Eq c, Show c, Semigroup a, Semigroup b, Semigroup c) => Three a b c -> Three a b c -> Three a b c -> Bool)
+--   quickCheck (monoidAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
+--   quickCheck (monoidAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
+--   quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b) => Or a b -> Or a b -> Or a b -> Bool)
   return ()
