@@ -1,6 +1,7 @@
 import           Control.Monad
 import           Data.Semigroup
-import           Test.QuickCheck
+import           Test.QuickCheck (Arbitrary, Gen, arbitrary, elements,
+                                  quickCheck)
 
 monoidAssoc :: (Eq m, Semigroup m) => m -> m -> m -> Bool
 monoidAssoc a b c = (a <> (b <> c)) == ((a <> b) <> c)
@@ -60,10 +61,8 @@ instance Arbitrary BoolDisj where
 data Or a b = Fst a | Snd b deriving (Show, Eq)
 
 instance Semigroup (Or a b) where
-  (<>) (Fst a) (Fst b) = Fst b
-  (<>) (Fst a) (Snd b) = Snd b
-  (<>) (Snd a) (Fst b) = Snd a
-  (<>) (Snd a) (Snd b) = Snd a
+  (<>) (Snd a) _ = Snd a
+  (<>) _ b = b
 
 instance (Arbitrary a, Arbitrary b) => Arbitrary (Or a b) where
   arbitrary = do
@@ -71,21 +70,76 @@ instance (Arbitrary a, Arbitrary b) => Arbitrary (Or a b) where
     b <- arbitrary
     elements [(Fst a), (Snd b)]
 
-f = Combine $ \n -> Sum (n+1)
-g = Combine $ \n -> Sum (n-1)
-
 newtype Combine a b = Combine { unCombine :: (a -> b) }
 
-instance (Semigroup a, Semigroup b) => Semigroup (Combine a b) where
-  (<>) f@(Combine a) g@(Combine b) = f
+instance (Semigroup b) => Semigroup (Combine a b) where
+  (<>) (Combine a) (Combine b) = Combine $ \x -> (a x) <> (b x)
+
+f = Combine $ \n -> Sum (n + 1)
+g = Combine $ \n -> Sum (n - 1)
+
+newtype Comp a = Comp { unComp :: (a -> a) }
+
+instance Semigroup (Comp a) where
+  (<>) (Comp a) (Comp b) = Comp (a . b)
+
+f' = Comp $ \n -> n + 1
+g' = Comp $ \n -> n - 1
+
+data Validation a b = Failure a | Success b deriving (Eq, Show)
+
+instance Semigroup a => Semigroup (Validation a b) where
+  (<>) (Failure a) (Failure b) = Failure (a <> b)
+  (<>) (Failure a) _ = Failure a
+  (<>) _ (Failure b) = Failure b
+  (<>) (Success a) _ = Success a
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Validation a b) where
+  arbitrary = do
+    a <- arbitrary
+    b <- arbitrary
+    elements [(Success a), (Failure b)]
+
+newtype AccumulateRight a b = AccumulateRight (Validation a b) deriving (Eq, Show)
+instance Semigroup b => Semigroup (AccumulateRight a b) where
+  (<>) (AccumulateRight (Success a)) (AccumulateRight (Success b)) = AccumulateRight (Success b)
+  (<>) (AccumulateRight (Failure a)) _ = AccumulateRight (Failure a)
+  (<>) _ (AccumulateRight (Failure b)) = AccumulateRight (Failure b)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (AccumulateRight a b) where
+  arbitrary = do
+    a <- arbitrary
+    b <- arbitrary
+    elements [AccumulateRight (Success a), AccumulateRight (Failure b)]
+
+newtype AccumulateBoth a b = AccumulateBoth (Validation a b) deriving (Eq, Show)
+
+instance Semigroup b => Semigroup (AccumulateBoth a b) where
+  (<>) (AccumulateBoth (Success a)) (AccumulateBoth (Success b)) = AccumulateBoth (Success (a <> b))
+  (<>) (AccumulateBoth (Failure a)) _ = AccumulateBoth (Failure a)
+  (<>) _ (AccumulateBoth (Failure b)) = AccumulateBoth (Failure b)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (AccumulateBoth a b) where
+  arbitrary = do
+    a <- arbitrary
+    b <- arbitrary
+    elements [AccumulateBoth (Success a), AccumulateBoth (Failure b)]
 
 main :: IO ()
 main = do
   quickCheck (monoidAssoc :: Trivial -> Trivial -> Trivial -> Bool)
---  quickCheck (monoidAssoc :: Identity Bool -> Identity Bool -> Identity Bool -> Bool)
---   quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b, Semigroup a, Semigroup b) => Two a b -> Two a b -> Two a b -> Bool)
---   quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b, Eq c, Show c, Semigroup a, Semigroup b, Semigroup c) => Three a b c -> Three a b c -> Three a b c -> Bool)
---   quickCheck (monoidAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
---   quickCheck (monoidAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
---   quickCheck (monoidAssoc :: (Eq a, Show a, Eq b, Show b) => Or a b -> Or a b -> Or a b -> Bool)
+  quickCheck (monoidAssoc :: Identity String -> Identity String -> Identity String -> Bool)
+  quickCheck (monoidAssoc :: Two [Int] [Int] -> Two [Int] [Int] -> Two [Int] [Int] -> Bool)
+  quickCheck (monoidAssoc :: Three [Int] [Int] [Int] -> Three [Int] [Int] [Int] -> Three [Int] [Int] [Int] -> Bool)
+  quickCheck (monoidAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
+  quickCheck (monoidAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
+  quickCheck (monoidAssoc :: Or String Int -> Or String Int -> Or String Int -> Bool)
+  quickCheck (monoidAssoc :: Or String Int -> Or String Int -> Or String Int -> Bool)
+  print ((unCombine (f <> g) $ 1) == Sum { getSum = 2 })
+  print ((unCombine (g <> f) $ 1) == Sum { getSum = 2 })
+  print ((unComp (f' <> g') $ 1) == 1)
+  print ((unComp (g' <> f') $ 1) == 1)
+  quickCheck (monoidAssoc :: Validation String Int -> Validation String Int -> Validation String Int -> Bool)
+  quickCheck (monoidAssoc :: AccumulateRight String [Int] -> AccumulateRight  String [Int] -> AccumulateRight  String [Int] -> Bool)
+  quickCheck (monoidAssoc :: AccumulateBoth String [Int] -> AccumulateBoth  String [Int] -> AccumulateBoth  String [Int] -> Bool)
   return ()
