@@ -140,6 +140,6 @@ main = do
   print ((unComp (f' <> g') $ 1) == 1)
   print ((unComp (g' <> f') $ 1) == 1)
   quickCheck (monoidAssoc :: Validation String Int -> Validation String Int -> Validation String Int -> Bool)
-  quickCheck (monoidAssoc :: AccumulateRight String [Int] -> AccumulateRight  String [Int] -> AccumulateRight  String [Int] -> Bool)
+  quickCheck (monoidAssoc :: AccumulateRight String [Int] -> AccumulateRight  String [Int] -> AccumulateRight String [Int] -> Bool)
   quickCheck (monoidAssoc :: AccumulateBoth String [Int] -> AccumulateBoth  String [Int] -> AccumulateBoth  String [Int] -> Bool)
   return ()
