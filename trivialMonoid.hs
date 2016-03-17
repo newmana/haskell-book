@@ -74,7 +74,7 @@ newtype Combine a b = Combine { unCombine :: (a -> b) }
 
 instance (Monoid b) => Monoid (Combine a b) where
   mempty = Combine mempty
-  (mappend) (Combine a) (Combine b) = Combine $ \x -> (a x) <> (b x)
+  (mappend) (Combine a) (Combine b) = Combine $ mappend a b
 
 f = Combine $ \n -> Sum (n + 1)
 g = Combine $ \n -> Sum (n - 1)
