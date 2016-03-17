@@ -81,8 +81,8 @@ g = Combine $ \n -> Sum (n - 1)
 
 newtype Comp a = Comp { unComp :: (a -> a) }
 
-instance (Num a) => Monoid (Comp a) where
-  mempty = Comp (\x -> 0)
+instance Monoid (Comp a) where
+  mempty = Comp id
   (mappend) (Comp a) (Comp b) = Comp (a . b)
 
 f' = Comp $ \n -> n + 1
