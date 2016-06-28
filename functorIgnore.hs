@@ -108,4 +108,4 @@ newtype Flip f a b =
   deriving (Eq, Show)
 
 instance Functor (Flip Tuple a) where
-  fmap (+1) (Flip (Tuple 1 "blah"))fmap f (Flip (Tuple a b)) = Flip $ Tuple (f a) b
+  fmap (+1) (Flip (Tuple 1 "blah")) fmap f (Flip (Tuple a b)) = Flip $ Tuple (f a) b
