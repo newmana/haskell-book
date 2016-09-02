@@ -60,7 +60,9 @@ zipWith' f (Cons x xs) (Cons y ys) = Cons (f x y) (zipWith' f xs ys)
 
 instance Applicative ZipList' where
   pure = ZipList' . foreverList
-  (<*>) (ZipList' fs) (ZipList' as) = ZipList' $ (zipWith' id fs as)
+  (<*>) (ZipList' fs) (ZipList' as) = ZipList' $ zipWith' id fs as
 
 a = Cons 2 (Cons 3 (Cons 2 (Cons 4 Nil)))
 b = flatMap (\x -> Cons 1 (Cons x Nil) ) a
+
+main = quickBatch $ applicative (ZipList' (Cons (1 :: Int, 2::Int , 3::Int) Nil))
