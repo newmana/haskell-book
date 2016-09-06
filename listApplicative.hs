@@ -35,7 +35,7 @@ instance Arbitrary a => Arbitrary (List a) where
 
 instance Applicative List where
   pure a = Cons a Nil
-  (<*>) f a = flatMap (\f -> fold (Cons . f) Nil a) f
+  (<*>) f a = flatMap (\g -> fold (Cons . g) Nil a) f
 
 newtype ZipList' a = ZipList' (List a) deriving (Eq, Show)
 
@@ -65,4 +65,4 @@ instance Applicative ZipList' where
 a = Cons 2 (Cons 3 (Cons 2 (Cons 4 Nil)))
 b = flatMap (\x -> Cons 1 (Cons x Nil) ) a
 
-main = quickBatch $ applicative (ZipList' (Cons (1 :: Int, 2::Int , 3::Int) Nil))
+main = quickBatch $ applicative (undefined :: ZipList' (Int, Int, Int))
