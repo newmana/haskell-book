@@ -11,19 +11,19 @@ functorIdentity :: (Functor f, Eq (f a)) => f a -> Bool
 functorIdentity f = fmap id f == f
 
 functorCompose :: (Eq (f c), Functor f) => (a -> b) -> (b -> c) -> f a -> Bool
-functorCompose f g x = (fmap g (fmap f x)) == (fmap (g . f) x)
+functorCompose f g x = fmap g (fmap f x) == fmap (g . f) x
 
 data BoolAndSomethingElse a =
   False' a | True' a deriving (Show, Eq)
 
-instance Functor (BoolAndSomethingElse) where
+instance Functor BoolAndSomethingElse where
   fmap f (False' a) = False' (f a)
   fmap f (True' a) = True' (f a)
 
 data BoolAndMaybeSomethingElse a =
   Falsish | Truish a deriving (Show, Eq)
 
-instance Functor (BoolAndMaybeSomethingElse) where
+instance Functor BoolAndMaybeSomethingElse where
   fmap _ Falsish = Falsish
   fmap f (Truish a) = Truish (f a)
 

@@ -5,13 +5,13 @@ import           Test.QuickCheck.Function
 import           Test.QuickCheck.Gen
 
 functorIdentity :: (Functor f, Eq (f a)) => f a -> Bool
-functorIdentity f = (fmap id f) == f
+functorIdentity f = fmap id f == f
 
 functorCompose :: (Eq (f c), Functor f) => (a -> b) -> (b -> c) -> f a -> Bool
-functorCompose f g x = (fmap g (fmap f x)) == (fmap (g . f) x)
+functorCompose f g x = fmap g (fmap f x) == fmap (g . f) x
 
 functorCompose' :: (Eq (f c), Functor f) => f a -> Fun a b -> Fun b c -> Bool
-functorCompose' x (Fun _ f) (Fun _ g) = (fmap (g . f) x) == (fmap g . fmap f $ x)
+functorCompose' x (Fun _ f) (Fun _ g) = fmap (g . f) x == (fmap g . fmap f $ x)
 
 type IntToInt = Fun Int Int
 type IntFC = [Int] -> IntToInt -> IntToInt -> Bool
@@ -34,7 +34,7 @@ data Trivial = Trivial deriving (Show, Eq)
 instance (Arbitrary a) => Arbitrary (Identity a) where
   arbitrary = Identity <$> arbitrary
 
-instance Functor (Pair) where
+instance Functor Pair where
   fmap f (Pair a1 a2) = Pair (f a1) (f a2)
 
 instance Functor (Two a) where
